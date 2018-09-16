@@ -17,7 +17,7 @@ val nodes : Int = 5
 fun Canvas.drawHSLNode(i : Int, scale : Float, paint : Paint) {
     val w : Float = width.toFloat()
     val h : Float = height.toFloat()
-    val gap : Float = w / (nodes + 1)
+    val gap : Float = h / (nodes + 1)
     val lSize : Float = gap / 4
     paint.strokeCap = Paint.Cap.ROUND
     paint.strokeWidth = Math.min(w, h) / 60
@@ -26,12 +26,18 @@ fun Canvas.drawHSLNode(i : Int, scale : Float, paint : Paint) {
     translate(w/2, gap + i * gap)
     for (j in 0..1) {
         val sc : Float = Math.min(0.5f, Math.max(0f, scale - 0.5f * j)) * 2
+        val sc1 : Float = Math.min(0.5f, sc) * 2
+        val sc2 : Float = Math.min(0.5f, Math.max(0f, sc - 0.5f)) * 2
         val sf : Float = 2 * j - 1f
         val sx : Float = -lSize + lSize * j
-        val dx : Float = (w - lSize) * sc * sf
+        val dx : Float = (w/2 - lSize) * sc2 * sf
+        save()
+        translate(0f, 0f)
+        rotate(-90f * (1 - sc1))
         save()
         translate(dx + sx, 0f)
         drawLine(0f, 0f, lSize, 0f, paint)
+        restore()
         restore()
     }
     restore()
@@ -177,6 +183,7 @@ class HorizontalStepLineView(ctx : Context) : View(ctx) {
 
         fun render(canvas : Canvas, paint : Paint) {
             canvas.drawColor(Color.parseColor("#BDBDBD"))
+            hsl.draw(canvas, paint)
             animator.animate {
                 hsl.update {i, scl ->
                     animator.stop()
