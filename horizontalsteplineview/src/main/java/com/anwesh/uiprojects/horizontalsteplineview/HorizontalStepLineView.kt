@@ -99,4 +99,49 @@ class HorizontalStepLineView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    data class HSLNode(var i : Int, val state : State = State()) {
+
+        private var next : HSLNode? = null
+        private var prev : HSLNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < nodes - 1) {
+                next = HSLNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawHSLNode(i, state.scale, paint)
+            next?.draw(canvas, paint)
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun update(cb : (Int, Float) -> Unit) {
+            state.update {
+                cb(i, it)
+            }
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : HSLNode {
+            var curr : HSLNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
+        }
+
+    }
 }
