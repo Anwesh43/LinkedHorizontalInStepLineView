@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.horizontalsteplineview
  * Created by anweshmishra on 16/09/18.
  */
 
+import android.app.Activity
 import android.view.View
 import android.view.MotionEvent
 import android.graphics.Canvas
@@ -187,6 +188,14 @@ class HorizontalStepLineView(ctx : Context) : View(ctx) {
             hsl.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : HorizontalStepLineView {
+            val view : HorizontalStepLineView = HorizontalStepLineView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
